@@ -8,7 +8,8 @@ include_HEADERS = json/json.h \
 
 lib_LTLIBRARIES = libjson.la
 libjson_la_SOURCES = codec.cpp \
-                     exception.cpp
+                     exception.cpp \
+                     value.cpp
 
 libjson_la_CFLAGS = -Wall @CFLAGS@
 libjson_la_LDFLAGS = -version-info 0:0:0 @LDFLAGS@
