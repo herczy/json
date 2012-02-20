@@ -1,0 +1,4 @@
+#ifndef JSON_JSON_H_INCLUDE
+#define JSON_JSON_H_INCLUDE
+
+#endif // JSON_H_INCLUDE
