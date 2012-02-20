@@ -16,7 +16,7 @@ namespace
       char outbuf_data[BUFFER_SIZE];
 
       char *inbuf = (char *)src.c_str();
-      size_t inremain = src.size() + 1;
+      size_t inremain = src.size();
 
       while (inremain > 0)
         {
