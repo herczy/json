@@ -9,16 +9,23 @@
 #include <exception>
 
 #define ASSERT_MSG(cond, msg...) do { \
-  if (!(cond)) \
-    { \
-      fprintf(stderr, "[%s:%d] ", __FILE__, __LINE__); \
-      fprintf(stderr, msg); \
-      fprintf(stderr, "\n"); \
-      abort(); \
-    } \
+    fprintf(stderr, "[%s:%d] ", __FILE__, __LINE__); \
+    if (!(cond)) \
+      { \
+        fprintf(stderr, msg); \
+        fprintf(stderr, "\n"); \
+        abort(); \
+      } \
+    else \
+      { \
+        fprintf(stderr, "assert passed ("); \
+        fprintf(stderr, msg); \
+        fprintf(stderr, ")\n"); \
+      } \
   } while (0)
 
 #define ASSERT(cond) ASSERT_MSG(cond, "Assertion " # cond " failed")
+#define ASSERT_EQ(s1, s2) ASSERT_MSG((s1) == (s2), # s1 " and " # s2 " not equal")
 #define ASSERT_STREQ(s1, s2) ASSERT_MSG(strcmp(s1, s2) == 0, "\"%s\" and \"%s\" not equal", s1, s2)
 #define ASSERT_WSTREQ(s1, s2) ASSERT_MSG(wcscmp(s1, s2) == 0, "\"%ls\" and \"%ls\" not equal", s1, s2)
 
