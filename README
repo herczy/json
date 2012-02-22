@@ -1,0 +1,26 @@
+This is an STL JSON implementation.
+
+Usage
+-----
+
+Parsing
+.......
+
+#include <json/json.h>
+
+Json::JsonHandler json;
+Json::Value val = json.decode("{ \"some\" : \"json\" }")
+
+const Json::Value::Object obj = val; // <- This is an STL map
+
+Writing
+.......
+
+#include <json/json.h>
+
+Json::JsonHandler json;
+std::string str;
+
+json.encode(str, Json::Value(true));
+
+// str == "true"
