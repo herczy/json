@@ -7,5 +7,4 @@
 #define JSON_NORETURN
 #endif
 
-
 #endif // JSON_COMMON_H_INCLUDE

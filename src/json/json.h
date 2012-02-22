@@ -13,17 +13,34 @@ namespace Json
   DEFINE_EXCEPTION_WITH_BASE(InvalidCharacter, ParseError);
   DEFINE_EXCEPTION_WITH_BASE(UnexpectedEof, ParseError);
 
+  /**
+   * JSON decoder/encoder.
+   */
   class JsonHandler
   {
   public:
     JsonHandler();
     ~JsonHandler();
 
+    /**
+     * Decode a JSON string. The string will be decoded with the given encoding.
+     */
     Value decode(const std::string &json, const char *encoding = "UTF-8");
+
+    /**
+     * Decode a JSON string.
+     */
     Value decode(const std::wstring &json);
 
-    void encode(std::wstring &dest, const Value &value);
+    /**
+     * Encode a JSON string. The string will be encoded with the given encoding.
+     */
     void encode(std::string &dest, const Value &value, const char *encoding = "UTF-8");
+
+    /**
+     * Encode a JSON string.
+     */
+    void encode(std::wstring &dest, const Value &value);
 
   private:
     Value decode_value(const wchar_t *data, int &pos);
