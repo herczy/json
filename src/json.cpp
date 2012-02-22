@@ -1,11 +1,26 @@
 #include "json/json.h"
 #include "json/codec.h"
 
+#include <iomanip>
+
 #include <wctype.h>
 #include <math.h>
 #include <stdio.h>
 
 using namespace Json;
+
+namespace
+{
+
+  void hex(std::wstringstream &dest, unsigned value)
+  {
+    std::wstringstream tmp;
+    tmp << std::hex << std::setw(4) << std::setfill(L'0') << value;
+
+    dest << tmp.str();
+  }
+
+}
 
 JsonHandler::JsonHandler()
 {
@@ -30,6 +45,24 @@ JsonHandler::decode(const std::wstring &json)
 {
   int pos = 0;
   return decode_value(json.c_str(), pos);
+}
+
+void
+JsonHandler::encode(std::wstring &dest, const Value &value)
+{
+  std::wstringstream str;
+  encode(str, value);
+  dest = str.str();
+}
+
+void
+JsonHandler::encode(std::string &dest, const Value &value, const char *encoding)
+{
+  Codec codec(encoding);
+  std::wstring result;
+
+  encode(result, value);
+  codec.encode(dest, result);
 }
 
 Value
@@ -288,6 +321,74 @@ JsonHandler::decode_object(const wchar_t *data, int &pos)
   return Value(object);
 }
 
+void
+JsonHandler::encode(std::wstringstream &dest, const Value &value)
+{
+  switch (value.get_type())
+    {
+    case Value::JSON_TYPE_NULL:
+      dest << "null";
+      break;
+
+    case Value::JSON_TYPE_BOOLEAN:
+      dest << ((bool)value ? "true" : "false");
+      break;
+
+    case Value::JSON_TYPE_INTEGER:
+      dest << (int)value;
+      break;
+
+    case Value::JSON_TYPE_FLOAT:
+      dest << (double)value;
+      break;
+
+    case Value::JSON_TYPE_STRING:
+      dest << L'\"';
+      escape(dest, value);
+      dest << L'\"';
+      break;
+
+    case Value::JSON_TYPE_LIST:
+      {
+        const Value::List &list = value;
+        bool first = true;
+
+        dest << "[";
+        for (Value::List::const_iterator it = list.begin(); it != list.end(); ++it)
+          {
+            if (first)
+              first = false;
+            else
+              dest << ", ";
+
+            encode(dest, *it);
+          }
+        dest << "]";
+      }
+      break;
+
+    case Value::JSON_TYPE_OBJECT:
+      {
+        const Value::Object &obj = value;
+        bool first = true;
+
+        dest << "{";
+        for (Value::Object::const_iterator it = obj.begin(); it != obj.end(); ++it)
+          {
+            if (first)
+              first = false;
+            else
+              dest << ", ";
+
+            dest << L'"' << it->first << L'"' << ":";
+            encode(dest, it->second);
+          }
+        dest << "}";
+      }
+      break;
+    }
+}
+
 wchar_t
 JsonHandler::unescape(const wchar_t *data, int &pos)
 {
@@ -345,6 +446,59 @@ JsonHandler::unescape(const wchar_t *data, int &pos)
 
   pos += 4;
   return (wchar_t)code;
+}
+
+void
+JsonHandler::escape(std::wstringstream &dest, const std::wstring &value)
+{
+  for (std::wstring::const_iterator it = value.begin(); it != value.end(); ++it)
+    {
+      switch (*it)
+        {
+        case L'\\':
+          dest << L"\\\\";
+          break;
+
+        case L'"':
+          dest << L"\\\"";
+          break;
+
+        case L'/':
+          dest << L"\\/";
+          break;
+
+        case L'\b':
+          dest << L"\\b";
+          break;
+
+        case L'\f':
+          dest << L"\\f";
+          break;
+
+        case L'\n':
+          dest << L"\\n";
+          break;
+
+        case L'\r':
+          dest << L"\\r";
+          break;
+
+        case L'\t':
+          dest << L"\\t";
+          break;
+
+        default:
+          if (!iswprint(*it))
+            {
+              dest << L"\\u";
+              hex(dest, (short)(*it & 0xFFFF));
+            }
+          else
+            dest << *it;
+
+          break;
+        }
+    }
 }
 
 int

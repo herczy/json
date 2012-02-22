@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <json/json.h>
 
 #include "common.h"
@@ -149,6 +151,43 @@ test_decode_object()
   ASSERT_THROW(handler.decode("{,}"), ParseError);
 }
 
+template < class _T >
+  std::wstring encode(const _T &value)
+  {
+    JsonHandler handler;
+    std::wstring res;
+    handler.encode(res, value);
+
+    return res;
+  }
+
+void
+test_encode()
+{
+  ASSERT_EQ(encode(Value()), L"null");
+  ASSERT_EQ(encode(true), L"true");
+  ASSERT_EQ(encode(false), L"false");
+  ASSERT_EQ(encode(0), L"0");
+  ASSERT_EQ(encode(-1), L"-1");
+  ASSERT_EQ(encode(1e7), L"1e+07");
+  ASSERT_EQ(encode("Hello"), L"\"Hello\"");
+  ASSERT_EQ(encode("\\/\"\b\f\n\r\t\u20ac"), L"\"\\\\\\/\\\"\\b\\f\\n\\r\\t\\u20ac\"");
+
+  Value::List list;
+  list.push_back(Value());
+  list.push_back(Value(1));
+  list.push_back(Value(true));
+  list.push_back(Value(Value::List()));
+  ASSERT_EQ(encode(list), L"[null, 1, true, []]");
+
+  Value::Object object;
+  object[L"a"] = Value();
+  object[L"b"] = Value(1);
+  object[L"c"] = Value(true);
+  object[L"d"] = Value(Value::Object());
+  ASSERT_EQ(encode(object), L"{\"a\":null, \"b\":1, \"c\":true, \"d\":{}}");
+}
+
 int
 main()
 {
@@ -177,5 +216,6 @@ main()
   RUN2(test_decode_float, "-1.6e-2", -0.016);
   RUN0(test_decode_array);
   RUN0(test_decode_object);
+  RUN0(test_encode);
   return 0;
 }
