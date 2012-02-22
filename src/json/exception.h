@@ -2,6 +2,9 @@
 #define JSON_EXCEPTION_H_INCLUDE
 
 #include <exception>
+#include <sstream>
+
+#include <json/common.h>
 
 namespace Json
 {
@@ -15,7 +18,7 @@ namespace Json
     const char *what() const throw();
 
   private:
-    const char *msg;
+    char *msg;
   };
 
 } // namespace Json
@@ -28,5 +31,16 @@ namespace Json
   }
 
 #define DEFINE_EXCEPTION(name) DEFINE_EXCEPTION_WITH_BASE(name, Json::Exception)
+
+DEFINE_EXCEPTION(AssertionError);
+
+#define assert(cond) do { \
+    if (!(cond)) \
+      { \
+        std::stringstream str; \
+        str << "Assertion " << #cond << "failed (file " << __FILE__ << " line " << __LINE__ << ")"; \
+        throw AssertionError(str.str().c_str()); \
+      } \
+  } while (0)
 
 #endif // JSON_EXCEPTION_H_INCLUDE

@@ -1,14 +1,18 @@
 #include "json/exception.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 using namespace Json;
 
 Exception::Exception(const char *msg) throw()
-  : msg(msg)
+  : msg(strdup(msg))
 {
 }
 
 Exception::~Exception() throw()
 {
+  free(msg);
 }
 
 const char *
