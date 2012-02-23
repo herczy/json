@@ -18,7 +18,7 @@ case "$srcdir" in
         ;;
 esac
 
-CXXFLAGS="-I$top_srcdir/lib -I$top_builddir/lib $CXXFLAGS"
+CXXFLAGS="-I$top_srcdir/src -I$top_builddir/src $CXXFLAGS"
 
 AC_ARG_ENABLE(debug,
   AC_HELP_STRING([--enable-debug],
