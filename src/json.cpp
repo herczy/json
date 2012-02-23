@@ -1,5 +1,4 @@
 #include "json/json.h"
-#include "json/codec.h"
 
 #include <iomanip>
 
@@ -22,7 +21,8 @@ namespace
 
 }
 
-JsonHandler::JsonHandler()
+JsonHandler::JsonHandler(const char *encoding)
+  : codec(encoding)
 {
 }
 
@@ -31,11 +31,9 @@ JsonHandler::~JsonHandler()
 }
 
 Value
-JsonHandler::decode(const std::string &json, const char *encoding)
+JsonHandler::decode(const std::string &json)
 {
-  Codec codec(encoding);
   std::wstring data;
-
   codec.decode(data, json);
   return decode(data);
 }
@@ -56,11 +54,9 @@ JsonHandler::encode(std::wstring &dest, const Value &value)
 }
 
 void
-JsonHandler::encode(std::string &dest, const Value &value, const char *encoding)
+JsonHandler::encode(std::string &dest, const Value &value)
 {
-  Codec codec(encoding);
   std::wstring result;
-
   encode(result, value);
   codec.encode(dest, result);
 }

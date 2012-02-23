@@ -5,6 +5,7 @@
 
 #include <json/value.h>
 #include <json/common.h>
+#include <json/codec.h>
 
 namespace Json
 {
@@ -19,13 +20,22 @@ namespace Json
   class JsonHandler
   {
   public:
-    JsonHandler();
+    /**
+     * Create and initialize a JsonHandler.
+     *
+     * @param encoding Encoding of non-multi byte strings.
+     */
+    JsonHandler(const char *encoding = "UTF-8");
+
+    /**
+     * Destroy JsonHandler.
+     */
     ~JsonHandler();
 
     /**
      * Decode a JSON string. The string will be decoded with the given encoding.
      */
-    Value decode(const std::string &json, const char *encoding = "UTF-8");
+    Value decode(const std::string &json);
 
     /**
      * Decode a JSON string.
@@ -35,7 +45,7 @@ namespace Json
     /**
      * Encode a JSON string. The string will be encoded with the given encoding.
      */
-    void encode(std::string &dest, const Value &value, const char *encoding = "UTF-8");
+    void encode(std::string &dest, const Value &value);
 
     /**
      * Encode a JSON string.
@@ -62,6 +72,9 @@ namespace Json
   private:
     template < class _Exception >
       void raise_error(const char *message, int position) JSON_NORETURN;
+
+  private:
+    Codec codec;
   };
 
   template < class _Exception >
