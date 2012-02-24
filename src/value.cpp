@@ -164,6 +164,8 @@ Value::operator=(const Value &other)
       value.v_object = new Object(*other.value.v_object);
       break;
     }
+
+  return *this;
 }
 
 bool
