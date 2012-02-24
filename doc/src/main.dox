@@ -1,0 +1,30 @@
+/*!
+
+@mainpage STL JSON parser and encoder
+
+This library is an STL JSON parser. The implementation is STL only with the exception of character
+codecs, which uses iconv. This will dependency will be optional as to make an STL-only library possible.
+
+@section json_usage Usage
+
+@code
+#include <json/json.h>
+
+Json::JsonHandler handler;
+Json::Value value = handler.decode("\"My JSON input\"");
+
+std::wcout << (const std::wstring &)value << std::endl;
+// Will result in "My JSON input" being printed
+@endcode
+
+The resulting value is a union of all JSON types. They can be used by casting them:
+
+@code
+const Json::Value::List &list = value;
+@endcode
+
+There is an implicit conversion in the case of some value types, meaning that if the parsed value was 'null',
+then casting to bool will result in a false. The complete implicit conversion table can be found in the documentation
+of the Json::Value class.
+
+*/
