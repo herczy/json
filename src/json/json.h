@@ -67,8 +67,6 @@ namespace Json
 
     bool compare_forward(const wchar_t *data, int &pos, const wchar_t *expect);
 
-    void skip_spaces(const wchar_t *data, int &pos);
-
   private:
     template < class _Exception >
       void raise_error(const char *message, int position) JSON_NORETURN;

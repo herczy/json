@@ -11,12 +11,18 @@ using namespace Json;
 namespace
 {
 
-  void hex(std::wstringstream &dest, unsigned value)
+  inline void hex(std::wstringstream &dest, unsigned value)
   {
     std::wstringstream tmp;
     tmp << std::hex << std::setw(4) << std::setfill(L'0') << value;
 
     dest << tmp.str();
+  }
+
+  inline void skip_spaces(const wchar_t *data, int &pos)
+  {
+    while (data[pos] && iswspace(data[pos]))
+      pos++;
   }
 
 }
@@ -509,13 +515,6 @@ JsonHandler::decode_integer(const wchar_t *data, int &pos)
     }
 
   return res;
-}
-
-void
-JsonHandler::skip_spaces(const wchar_t *data, int &pos)
-{
-  while (data[pos] && iswspace(data[pos]))
-    pos++;
 }
 
 bool
