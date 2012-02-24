@@ -14,6 +14,14 @@ namespace Json
 
   /**
    * Represents a JSON value. Can be casted to the STL appropriate JSON types.
+   *
+   * The list of implicit casts is the following:
+   * <ul>
+   *   <li>A NULL can be cast to bool (false) and int (0)</li>
+   *   <li>A boolean can be cast to bool and int (0 for false, 1 for true)</li>
+   *   <li>An integer can be cast to bool (false if integer is 0, true otherwise) and int</li>
+   *   <li>A float can be converted to float and int (its value rounded down)</li>
+   * </ul>
    */
   class Value
   {
@@ -32,7 +40,14 @@ namespace Json
       JSON_TYPE_OBJECT,
     };
 
+    /**
+     * List of values. JSON lists are decoded to this type.
+     */
     typedef std::vector< Value > List;
+
+    /**
+     * Map of key-value pairs. JSON objects are decoded to this type.
+     */
     typedef std::map< std::wstring, Value > Object;
 
   public:
@@ -41,6 +56,12 @@ namespace Json
      */
     Value();
 
+    /**
+     * Initialize value with the given type, if possible.
+     *
+     * @tparam _Type Initial value type.
+     * @param value Initial value.
+     */
     template < class _Type >
       Value(const _Type &value)
       {
@@ -154,11 +175,34 @@ namespace Json
     inline bool is_null() const
     { return type == JSON_TYPE_NULL; }
 
+    /**
+     * Get object value as a bool.
+     */
     operator bool() const;
+
+    /**
+     * Get object value as an integer.
+     */
     operator int() const;
+
+    /**
+     * Get object value as a floating point number.
+     */
     operator double() const;
+
+    /**
+     * Get object value as a wide string.
+     */
     operator const std::wstring &() const;
+
+    /**
+     * Get object value as a list of values.
+     */
     operator const List &() const;
+
+    /**
+     * Get object value as a map of values.
+     */
     operator const Object &() const;
 
   private:
