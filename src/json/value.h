@@ -41,52 +41,11 @@ namespace Json
      */
     Value();
 
-    /**
-     * Create a boolean JSON value.
-     */
-    Value(bool value);
-
-    /**
-     * Create a number JSON value.
-     */
-    Value(int value);
-
-    /**
-     * Create a number JSON value.
-     */
-    Value(double value);
-
-    /**
-     * Create a string JSON value.
-     */
-    Value(const wchar_t *value, int len = -1);
-
-    /**
-     * Create a string JSON value.
-     */
-    Value(const std::wstring &value);
-
-    /**
-     * Create a string JSON value. The string is decoded with
-     * the given codec.
-     */
-    Value(const char *value, int len = -1, const char *encoding = "UTF-8");
-
-    /**
-     * Create a string JSON value. The string is decoded with
-     * the given codec.
-     */
-    Value(const std::string &value, const char *encoding = "UTF-8");
-
-    /**
-     * Create a JSON list.
-     */
-    Value(const List &list);
-
-    /**
-     * Create a JSON object.
-     */
-    Value(const Object &object);
+    template < class _Type >
+      Value(const _Type &value)
+      {
+        set(value);
+      }
 
     /**
      * Copy the given value.
@@ -97,6 +56,63 @@ namespace Json
      * Destroy the Value and the contained JSON value.
      */
     ~Value();
+
+    /**
+     * Set the value to null.
+     */
+    void set();
+
+    /**
+     * Set the value to a boolean value.
+     */
+    void set(bool value);
+
+    /**
+     * Set the value to a number value.
+     */
+    void set(int value);
+
+    /**
+     * Set the value to a number value.
+     */
+    void set(double value);
+
+    /**
+     * Set the value to a string value.
+     */
+    void set(const std::wstring &value);
+
+    /**
+     * Set the value to a C-style string value.
+     */
+    void set(const wchar_t *value, int len = -1);
+
+    /**
+     * Set the value to a string value. The string is decoded with
+     * the given codec.
+     */
+    void set(const std::string &value, const char *encoding = "UTF-8");
+
+    /**
+     * Set the value to a C-style string value. The string is decoded with
+     * the given codec.
+     */
+    void set(const char *value, int len = -1, const char *encoding = "UTF-8");
+
+    /**
+     * Set the value to a JSON list.
+     */
+    void set(const List &value);
+
+    /**
+     * Set the value to a JSON object.
+     */
+    void set(const Object &value);
+
+    /**
+     * Swap values with other.
+     */
+    void swap(Value &other);
 
     /**
      * Assign another JSON value to this one.
@@ -156,7 +172,7 @@ namespace Json
 
   private:
     Type type;
-    union
+    union Values
     {
       bool v_boolean;
       int v_integer;
@@ -164,7 +180,7 @@ namespace Json
       std::wstring *v_string;
       List *v_list;
       Object *v_object;
-    };
+    } value;
   };
 
 } // namespace Json
