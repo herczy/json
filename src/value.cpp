@@ -205,8 +205,6 @@ Value::~Value()
 void
 Value::clear()
 {
-  type = JSON_TYPE_NULL;
-
   switch (type)
     {
     case JSON_TYPE_NULL:
@@ -227,6 +225,8 @@ Value::clear()
       delete value.v_object;
       break;
     }
+
+  type = JSON_TYPE_NULL;
 }
 
 Value::operator bool() const
