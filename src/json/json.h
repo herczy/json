@@ -1,3 +1,6 @@
+/**
+ * @file
+ */
 #ifndef JSON_JSON_H_INCLUDE
 #define JSON_JSON_H_INCLUDE
 
@@ -15,7 +18,9 @@ namespace Json
   DEFINE_EXCEPTION_WITH_BASE(UnexpectedEof, ParseError);
 
   /**
-   * JSON decoder/encoder.
+   * JSON decoder/encoder. While the Value object only stores wide strings, the
+   * JsonHandler object can handle normal strings. These strings will be transcoded
+   * to the proper charsets prior to decoding and after encoding a Value object.
    */
   class JsonHandler
   {
@@ -34,21 +39,33 @@ namespace Json
 
     /**
      * Decode a JSON string. The string will be decoded with the given encoding.
+     *
+     * @param json The JSON data in the encoding given previously to JsonHandler.
+     * @return The decoded JSON value.
      */
     Value decode(const std::string &json);
 
     /**
      * Decode a JSON string.
+     *
+     * @param json The JSON data.
+     * @return The decoded JSON value.
      */
     Value decode(const std::wstring &json);
 
     /**
      * Encode a JSON string. The string will be encoded with the given encoding.
+     *
+     * @param dest Destination string.
+     * @param value Value object to be encoded.
      */
     void encode(std::string &dest, const Value &value);
 
     /**
      * Encode a JSON string.
+     *
+     * @param dest Destination string.
+     * @param value Value object to be encoded.
      */
     void encode(std::wstring &dest, const Value &value);
 
